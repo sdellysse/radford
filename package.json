@@ -1,10 +1,12 @@
 {
   "name": "radford",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "An asynchronous service container for application services",
-  "main": "src/index.js",
+  "main": "src/Radford.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "start": "npm run start:start",
+      "start:start": "node index.js",
+      "start:debug": "BLUEBIRD_DEBUG=1 iron-node index.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,16 @@
   "bugs": {
     "url": "https://github.com/shawndellysse/radford/issues"
   },
-  "homepage": "https://github.com/shawndellysse/radford#readme"
+  "homepage": "https://github.com/shawndellysse/radford#readme",
+  "dependencies": {
+  },
+  "babel": {
+    "optional": [
+      "es7.asyncFunctions"
+    ]
+  },
+  "devDependencies": {
+    "babel": "^5.8.21",
+    "iron-node": "^1.5.30"
+  }
 }

@@ -1,45 +1,40 @@
-# Radford: an asynchronous service container for your application
+# Radford: an asynchronous service container for your application #
+
+### Installation ###
 
 ```javascript
-var Radford = require("radford");
-var services = new Radford();
+npm install radford
+```
 
-// Define a few services.
-services.define({
-    // Use the cache to keep from creating a new service every time it is required.
-    log: function (resolveTo, options, cache) {
-        if (typeof cache.logger === "undefined") {
-            cache.logger = function (message) {
-                console.log((new Date()) + " " + message);
-            };
-        }
+### Description ###
 
-        resolveTo(cache.logger);
-    },
+Radford is a lightweight fully asynchronous service container for managing
+initialization and dependencies inside your app. Radford fully embraces
+ESnext's async/await functionality, making it very pleasant to work with.
 
-    // Services don't need to be functions. They can be any value other than undefined.
-    name: function (resolveTo) {
-        resolveTo("world");
-    },
+### Usage ###
 
-    // This is the long-form service declaration. A service can depend on other services.
-    proclaim: {
-        requires: ["log", "name"],
-        definition: function (resolveTo, options, cache, services) {
-            var log = services.log;
-            var name = services.name;
+```javascript
+const Radford = require("radford");
 
-            var proclaimer = function () {
-                log("Hello " + name + "!");
-            };
+const cache = {};
+const radford = new Radford({
+    services: {
+        log: {
+            run: async function () {
+                if (!cache.log) {
+                    cache.log = console.log.bind(console, "LOG");
+                }
 
-            resolveTo(proclaimer);
+                return coche.log;
+            },
         },
     },
 });
 
-// Use the services
-services.require(["proclaim"], function (services) {
-    services.proclaim();
-});
+radford.require([ "log" ])
+.then(({ log }) => {
+    log("Hello, world") // Outputs: "LOG hello, world"
+})
+.catch(error => console.trace(error));
 ```
