@@ -1,10 +1,11 @@
 {
   "name": "radford",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "An asynchronous service container for application services",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "babel src --out-dir dist",
+    "prepublish": "npm run clean && npm run compile"
   },
   "repository": {
     "type": "git",

@@ -1,108 +1,43 @@
-var ServiceContainer;
+const cleanDefinition = require("./clean-definition");
+const getServicesFromContainerInvocations = require("./get-services-from-container-invocations");
+const ServiceRedefinitionForbiddenError = require("./service-redefinition-forbidden-error");
 
-ServiceContainer = function () {
-    this.services = {};
-};
+const Radford = function (options) {
+    this.container = {};
 
-defineOne = function (name, args) {
-    if (typeof name !== "string") {
-        throw new Error("name must be string");
-    }
-    if (typeof this.services[name] !== "undefined") {
-        throw new Error("cannot redefine service");
-    }
-    if (typeof args === "function") {
-        args = {
-            definition: args,
-        };
-    }
-
-    if (typeof args.dependencies === "undefined") {
-        args.dependencies = [];
-    }
-
-    this.services[name] = {
-        name: name,
-        dependencies: args.dependencies,
-        definition: args.definition,
-
-        cache: {},
-        currentlyResolving: false,
-    };
-};
-
-defineMany = function (defines) {
-    for (let name in defines) {
-        const define = defines[name];
-
-        this.defineOne(name, define);
+    if (options.definitions) {
+        this.define(definitions);
     }
 };
 
-ServiceContainer.prototype.define = function () {
-    if (typeof arguments[0] === "string") {
-        return defineOne.call(this, arguments[0], arguments[1]);
-    } else {
-        return defineMany.call(this, arguments[0]);
-    }
-};
+Object.assign(Radford, {
+    errors: {
+        CircularDependencyError:           require("./circular-dependency-error"),
+        InvalidCacheKeyError:              require("./invalid-cache-key-error"),
+        InvalidCachePropertyError:         require("./invalid-cache-property-error"),
+        InvalidCreatePropertyError:        require("./invalid-create-property-error"),
+        InvalidDependencyDefinitionError:  require("./invalid-dependency-definition-error"),
+        InvalidInvocationsError:           require("./invalid-invocations-error"),
+        InvalidServiceNameError:           require("./invalid-service-name-error"),
+        ServiceRedefinitionForbiddenError: require("./service-redefinition-forbidden-error"),
+        UnknownServiceError:               require("./unknown-service-error"),
+    },
+});
 
-
-ServiceContainer.prototype.require = function (requests, cb) {
-    if (typeof cb !== "function") {
-        throw new Error("cb must be a function");
-    }
-
-    if (requests.length === 0) {
-        cb({});
-        return;
-    }
-
-    requests = requests.map(request => {
-        if (typeof request === "string") {
-            request = {
-                service: request,
-            };
-        }
-
-        if (typeof this.services[request.service] === "undefined") {
-            throw new Error("bad service name: '"+request.service+"'");
-        }
-
-        return request;
-    });
-
-
-    let finishedServiceCount = 0;
-    const totalServiceCount = requests.length;
-
-    const cbval = {};
-    for (let request of requests) {
-        const service = this.services[request.service];
-        if (service.currentlyResolving) {
-            throw new Error("trying to resolve service '"+service.name+"' multiple times. circular dependency detected.");
-        }
-        service.currentlyResolving = true;
-
-        const collectServiceObject = function (serviceObject) {
-            if (typeof serviceObject === "undefined") {
-                throw new Error("serviceObject sent to requestCb is undef");
+Radford.prototype = Object.create(null);
+Object.assign(Radford.prototype, {
+    define: function (definitions) {
+        for (let name of Object.keys(definitions)) {
+            if (this.container[name]) {
+                throw new ServiceRedefinitionForbiddenError(name);
             }
 
-            service.currentlyResolving = false;
+            this.container[name] = cleanDefinition(name, definitions[name]);
+        }
+    },
+    require: function (invocations) {
+        return getServicesFromContainerInvocations(this.container, invocations);
+    },
+});
 
-            cbval[service.name] = serviceObject;
-            finishedServiceCount += 1;
-
-            if (finishedServiceCount === totalServiceCount) {
-                cb(cbval);
-            }
-        };
-
-        this.require(service.dependencies, function (dependencies) {
-            service.definition(collectServiceObject, request, service.cache, dependencies);
-        });
-    }
-};
-
-module.exports = ServiceContainer;
+module.exports = Radford;
