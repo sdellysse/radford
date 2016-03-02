@@ -3,10 +3,7 @@
   "version": "0.0.1",
   "description": "An asynchronous service container for application services",
   "main": "dist/index.js",
-  "scripts": {
-    "compile": "babel src --out-dir dist",
-    "prepublish": "npm run clean && npm run compile"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shawndellysse/radford.git"

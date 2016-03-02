@@ -5,14 +5,17 @@ const UnknownServiceError = require("./unknown-service-error");
 const invokeContainer = function (container, invocation) {
     const serviceDefinition = container[invocation.name];
 
-    if (serviceDefinition._resolving) {
-        return Promise.reject(new CircularDependencyError());
-    }
-    serviceDefinition._resolving = true;
-
-    const dependencyInvocations = serviceDefinition.dependencies(invocations.args);
-
-    return getServicesFromContainerInvocations(container, dependencyInvocations)
+    return Promise.resolve()
+    .then(() => {
+        if (serviceDefinition._resolving) {
+            return Promise.reject(new CircularDependencyError());
+        }
+        serviceDefinition._resolving = true;
+    })
+    .then(() => {
+        const dependencyInvocations = serviceDefinition.dependencies(invocations.args);
+        return getServicesFromContainerInvocations(container, dependencyInvocations);
+    })
     .then(dependencies => serviceDefinition.create(dependencies, invocation.args))
     .then(serviceObject => {
         serviceDefinition._resolving = false;
@@ -38,12 +41,12 @@ const getServicesFromContainerInvocations = function (container, invocations) {
 
         if (cacheKey === false) {
             return invokeContainer(container, invocation);
+        } else {
+            if (!serviceDefinition._cache[cacheKey]) {
+                serviceDefinition._cache[cacheKey] = invokeContainer(container, invocation);
+            }
+            return serviceDefinition._cache[cacheKey];
         }
-
-        if (!serviceDefinition._cache[cacheKey]) {
-            serviceDefinition._cache[cacheKey] = invokeContainer(container, serviceDefinition, invocation);
-        }
-        return serviceDefinition._cache[cacheKey];
     })))
     .then(serviceList => {
         const retval = {};
