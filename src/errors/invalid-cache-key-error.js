@@ -1,3 +1,5 @@
+"use strict";
+
 const InvalidCacheKeyError = function (serviceName, cacheKey) {
     this.name = 'InvalidCacheKeyError';
     this.message = `Invalid cache key '${ cacheKey }' for service '${ serviceName }'`;

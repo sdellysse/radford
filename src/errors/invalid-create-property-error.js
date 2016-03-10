@@ -1,3 +1,5 @@
+"use strict";
+
 const InvalidCreatePropertyError = function (serviceName) {
     this.name = 'InvalidCreatePropertyError';
     this.message = `Invalid create property for service '${ serviceName }'`;

@@ -1,3 +1,5 @@
+"use strict";
+
 const UnknownServiceError = function (serviceName) {
     this.name = 'UnknownServiceError';
     this.message = `Unknown service '${ serviceName }'`;

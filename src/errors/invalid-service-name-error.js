@@ -1,3 +1,5 @@
+"use strict";
+
 const InvalidServiceNameError = function (serviceName) {
     this.name = 'InvalidServiceNameError';
     this.message = `Invalid service name: '${ serviceName }'`;

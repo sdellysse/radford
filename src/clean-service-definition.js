@@ -1,9 +1,11 @@
-const InvalidCacheKeyError = require("./invalid-cache-key-error");
-const InvalidCachePropertyError = require("./invalid-cache-property-error");
-const InvalidCreatePropertyError = require("./invalid-create-property-error");
-const InvalidDependencyDefinitionError = require("./invalid-dependency-definition-error");
-const InvalidInvocationsError = require("./invalid-invocations-error");
-const InvalidServiceNameError = require("./invalid-service-name-error");
+"use strict";
+
+const InvalidCacheKeyError = require("./errors/invalid-cache-key-error");
+const InvalidCachePropertyError = require("./errors/invalid-cache-property-error");
+const InvalidCreatePropertyError = require("./errors/invalid-create-property-error");
+const InvalidDependencyDefinitionError = require("./errors/invalid-dependency-definition-error");
+const InvalidInvocationsError = require("./errors/invalid-invocations-error");
+const InvalidServiceNameError = require("./errors/invalid-service-name-error");
 
 /**
  * The cache property of a service definition should be a function that receives
@@ -29,10 +31,9 @@ const cleanCacheProperty = function (name, cache) {
 
     } else if (cache === true) {
         return (() => "cache");
-
-    } else {
-        throw new InvalidCachePropertyError(name);
     }
+
+    throw new InvalidCachePropertyError(name);
 };
 
 
@@ -75,24 +76,24 @@ const cleanDependenciesProperty = function (name, dependencies) {
         || dependencies == null
     ) {
         return [];
-
-    } else {
-        throw new InvalidDependencyDefinitionError(name);
     }
+
+    throw new InvalidDependencyDefinitionError(name);
 };
 
 const cleanCreateProperty = function (name, create) {
-    if (typeof(create) !== "function") {
-        throw new InvalidCreatePropertyError(name);
+    if (typeof(create) === "function") {
+        return function (deps, args) {
+            try {
+                return Promise.resolve(create(deps, args));
+            } catch (e) {
+                return Promise.reject(e);
+            }
+        };
     }
 
-    return function (deps, args) {
-        try {
-            return Promise.resolve(create(deps, args));
-        } catch (e) {
-            return Promise.reject(e);
-        }
-    };
+    throw new InvalidCreatePropertyError(name);
+
 };
 
 /**
@@ -133,7 +134,7 @@ const cleanServiceDefinition = function (name, serviceDefinition) {
         cache: cleanCacheProperty(name, serviceDefinition),
         create: cleanCreateProperty(name, serviceDefinition),
 
-        _cache: {},
+        _cache: new WeakMap(),
         _resolving: false,
     };
 };

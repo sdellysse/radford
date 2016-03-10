@@ -1,3 +1,5 @@
+"use strict";
+
 const InvalidInvocationsError = function (reason) {
     this.name = 'InvalidInvocationsError';
     this.message = `Invalid Invocation: '${ reason }'`;

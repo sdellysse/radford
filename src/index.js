@@ -1,26 +1,28 @@
+"use strict";
+
 const cleanDefinition = require("./clean-definition");
 const getServicesFromContainerInvocations = require("./get-services-from-container-invocations");
-const ServiceRedefinitionForbiddenError = require("./service-redefinition-forbidden-error");
+const ServiceRedefinitionForbiddenError = require("./errors/service-redefinition-forbidden-error");
 
-const Radford = function (options) {
+const Radford = function (definitions) {
     this.container = {};
 
-    if (options.definitions) {
+    if (definitions) {
         this.define(definitions);
     }
 };
 
 Object.assign(Radford, {
     errors: {
-        CircularDependencyError:           require("./circular-dependency-error"),
-        InvalidCacheKeyError:              require("./invalid-cache-key-error"),
-        InvalidCachePropertyError:         require("./invalid-cache-property-error"),
-        InvalidCreatePropertyError:        require("./invalid-create-property-error"),
-        InvalidDependencyDefinitionError:  require("./invalid-dependency-definition-error"),
-        InvalidInvocationsError:           require("./invalid-invocations-error"),
-        InvalidServiceNameError:           require("./invalid-service-name-error"),
-        ServiceRedefinitionForbiddenError: require("./service-redefinition-forbidden-error"),
-        UnknownServiceError:               require("./unknown-service-error"),
+        CircularDependencyError:           require("./errors/circular-dependency-error"),
+        InvalidCacheKeyError:              require("./errors/invalid-cache-key-error"),
+        InvalidCachePropertyError:         require("./errors/invalid-cache-property-error"),
+        InvalidCreatePropertyError:        require("./errors/invalid-create-property-error"),
+        InvalidDependencyDefinitionError:  require("./errors/invalid-dependency-definition-error"),
+        InvalidInvocationsError:           require("./errors/invalid-invocations-error"),
+        InvalidServiceNameError:           require("./errors/invalid-service-name-error"),
+        ServiceRedefinitionForbiddenError: require("./errors/service-redefinition-forbidden-error"),
+        UnknownServiceError:               require("./errors/unknown-service-error"),
     },
 });
 

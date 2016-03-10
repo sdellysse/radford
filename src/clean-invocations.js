@@ -1,4 +1,6 @@
-const InvalidInvocationsError = require("./invalid-invocations-error");
+"use strict";
+
+const InvalidInvocationsError = require("./errors/invalid-invocations-error");
 
 /**
  * An invocation list can come from either a service's dependency function or

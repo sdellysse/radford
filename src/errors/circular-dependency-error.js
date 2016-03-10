@@ -1,3 +1,5 @@
+"use strict";
+
 const CircularDependencyError = function () {
     this.name = 'CircularDependencyError';
     this.message = `Circular dependency detected`;

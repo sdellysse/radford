@@ -1,3 +1,5 @@
+"use strict";
+
 const ServiceRedefinitionForbiddenError = function (definitionName) {
     this.name = 'ServiceRedefinitionForbiddenError';
     this.message = `Cannot redefine service '${ definitionName }'`;

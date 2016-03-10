@@ -1,3 +1,5 @@
+"use strict";
+
 const InvalidDependencyDefinitionError = function (serviceName) {
     this.name = 'InvalidDependencyDefinitionError';
     this.message = `Invalid dependency definition for service '${ serviceName }'`;

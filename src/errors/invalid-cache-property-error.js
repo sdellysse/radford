@@ -1,3 +1,5 @@
+"use strict";
+
 const InvalidCachePropertyError = function (serviceName) {
     this.name = 'InvalidCachePropertyError';
     this.message = `Invalid cache property for service '${ serviceName }'`;
