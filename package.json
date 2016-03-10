@@ -1,6 +1,6 @@
 {
   "name": "radford",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An asynchronous service container for application services",
   "main": "src/index.js",
   "scripts": {
