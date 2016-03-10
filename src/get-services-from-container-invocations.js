@@ -14,7 +14,7 @@ const invokeContainer = function (container, invocation) {
 
     return Promise.resolve()
     .then(() => {
-        const dependencyInvocations = serviceDefinition.dependencies(invocations.args);
+        const dependencyInvocations = serviceDefinition.dependencies(invocation.args);
         return getServicesFromContainerInvocations(container, dependencyInvocations);
     })
     .then(dependencies => serviceDefinition.create(dependencies, invocation.args))
@@ -33,7 +33,7 @@ const getServicesFromContainerInvocations = function (container, invocations) {
     return Promise.resolve()
     .then(() => cleanInvocations(invocations))
     .then(invocations => Promise.all(invocations.map(invocation => {
-        const serviceDefinition = container.serviceDefinitions[invocation.name];
+        const serviceDefinition = container[invocation.name];
         if (typeof(serviceDefinition) === "undefined") {
             return Promise.reject(new UnknownServiceError(invocation.name));
         }
@@ -59,4 +59,4 @@ const getServicesFromContainerInvocations = function (container, invocations) {
     ;
 };
 
-module.exports = getServicesFromContainer;
+module.exports = getServicesFromContainerInvocations;

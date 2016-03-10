@@ -1,5 +1,6 @@
 "use strict";
 
+const cleanInvocations = require("./clean-invocations");
 const InvalidCacheKeyError = require("./errors/invalid-cache-key-error");
 const InvalidCachePropertyError = require("./errors/invalid-cache-property-error");
 const InvalidCreatePropertyError = require("./errors/invalid-create-property-error");
@@ -75,7 +76,7 @@ const cleanDependenciesProperty = function (name, dependencies) {
         || dependencies === false
         || dependencies == null
     ) {
-        return [];
+        return () => [];
     }
 
     throw new InvalidDependencyDefinitionError(name);
@@ -123,20 +124,20 @@ const cleanCreateProperty = function (name, create) {
  *   It can either return its service object directly or return a promise that
  *   will eventually resolve to the service object.
  */
-const cleanServiceDefinition = function (name, serviceDefinition) {
+const cleanDefinition = function (name, serviceDefinition) {
     if (typeof(name) !== "string" || name.trim().length === 0) {
         throw new InvalidServiceNameError(name);
     }
 
     return {
         name,
-        dependencies: cleanDependenciesProperty(name, serviceDefinition),
-        cache: cleanCacheProperty(name, serviceDefinition),
-        create: cleanCreateProperty(name, serviceDefinition),
+        dependencies: cleanDependenciesProperty(name, serviceDefinition.dependencies),
+        cache: cleanCacheProperty(name, serviceDefinition.cache),
+        create: cleanCreateProperty(name, serviceDefinition.create),
 
         _cache: new WeakMap(),
         _resolving: false,
     };
 };
 
-module.exports = cleanServiceDefinition;
+module.exports = cleanDefinition;

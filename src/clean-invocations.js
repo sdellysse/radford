@@ -38,7 +38,7 @@ const cleanInvocations = function (invocations) {
             };
 
         } else if (1
-            && typeof(invocation) === "array"
+            && Array.isArray(invocation)
             && invocation.length === 2
             && typeof(invocation[0]) === "string"
         ) {
