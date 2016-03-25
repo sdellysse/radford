@@ -1,45 +1,41 @@
-"use strict";
+import createContainer from "./create-container";
+import InvalidCreatePropertyError from "./errors/invalid-create-property-error";
+import InvalidDependencyDefinitionError from "./errors/invalid-dependency-definition-error";
+import InvalidInvocationsError from "./errors/invalid-invocations-error";
+import InvalidServiceNameError from "./errors/invalid-service-name-error";
+import invokeContainer from "./invoke-container";
+import ServiceRedefinitionForbiddenError from "./errors/service-redefinition-forbidden-error";
+import UnknownServiceError from "./errors/UnknownServiceError";
 
-const cleanDefinition = require("./clean-definition");
-const getServicesFromContainerInvocations = require("./get-services-from-container-invocations");
-const ServiceRedefinitionForbiddenError = require("./errors/service-redefinition-forbidden-error");
-
-const Radford = function (definitions) {
-    this.container = {};
-
-    if (definitions) {
-        this.define(definitions);
+const Radford = function (options) {
+    if (typeof(options) === "undefined") {
+        options = {};
     }
-};
+
+    if (options.definitions) {
+        this.define(options.definitions);
+    }
+}
 
 Object.assign(Radford, {
     errors: {
-        CircularDependencyError:           require("./errors/circular-dependency-error"),
-        InvalidCacheKeyError:              require("./errors/invalid-cache-key-error"),
-        InvalidCachePropertyError:         require("./errors/invalid-cache-property-error"),
-        InvalidCreatePropertyError:        require("./errors/invalid-create-property-error"),
-        InvalidDependencyDefinitionError:  require("./errors/invalid-dependency-definition-error"),
-        InvalidInvocationsError:           require("./errors/invalid-invocations-error"),
-        InvalidServiceNameError:           require("./errors/invalid-service-name-error"),
-        ServiceRedefinitionForbiddenError: require("./errors/service-redefinition-forbidden-error"),
-        UnknownServiceError:               require("./errors/unknown-service-error"),
+        InvalidCreatePropertyError,
+        InvalidDependencyDefinitionError,
+        InvalidInvocationsError,
+        InvalidServiceNameError,
+        ServiceRedefinitionForbiddenError,
+        UnknownServiceError,
     },
 });
 
-Radford.prototype = Object.create(null);
 Object.assign(Radford.prototype, {
     define: function (definitions) {
-        for (let name of Object.keys(definitions)) {
-            if (this.container[name]) {
-                throw new ServiceRedefinitionForbiddenError(name);
-            }
-
-            this.container[name] = cleanDefinition(name, definitions[name]);
-        }
+        this.container = createContainer(definitions, this.container);
     },
-    require: function (invocations) {
-        return getServicesFromContainerInvocations(this.container, invocations);
+
+    invoke: function (...invocations) {
+        return invokeContainer(this.container, invocations);
     },
 });
 
-module.exports = Radford;
+export default Radford;

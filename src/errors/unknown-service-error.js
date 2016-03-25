@@ -1,5 +1,3 @@
-"use strict";
-
 const UnknownServiceError = function (serviceName) {
     this.name = 'UnknownServiceError';
     this.message = `Unknown service '${ serviceName }'`;
@@ -10,4 +8,4 @@ const UnknownServiceError = function (serviceName) {
 UnknownServiceError.prototype = Object.create(Error.prototype);
 UnknownServiceError.constructor = UnknownServiceError;
 
-module.exports = UnknownServiceError;
+export default UnknownServiceError;

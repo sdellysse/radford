@@ -1,5 +1,3 @@
-"use strict";
-
 const InvalidDependencyDefinitionError = function (serviceName) {
     this.name = 'InvalidDependencyDefinitionError';
     this.message = `Invalid dependency definition for service '${ serviceName }'`;
@@ -10,4 +8,4 @@ const InvalidDependencyDefinitionError = function (serviceName) {
 InvalidDependencyDefinitionError.prototype = Object.create(Error.prototype);
 InvalidDependencyDefinitionError.constructor = InvalidDependencyDefinitionError;
 
-module.exports = InvalidDependencyDefinitionError;
+export default InvalidDependencyDefinitionError;

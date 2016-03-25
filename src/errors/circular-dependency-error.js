@@ -1,5 +1,3 @@
-"use strict";
-
 const CircularDependencyError = function () {
     this.name = 'CircularDependencyError';
     this.message = `Circular dependency detected`;
@@ -8,4 +6,4 @@ const CircularDependencyError = function () {
 CircularDependencyError.prototype = Object.create(Error.prototype);
 CircularDependencyError.constructor = CircularDependencyError;
 
-module.exports = CircularDependencyError;
+export default CircularDependencyError;

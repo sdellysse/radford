@@ -1,5 +1,3 @@
-"use strict";
-
 const InvalidCreatePropertyError = function (serviceName) {
     this.name = 'InvalidCreatePropertyError';
     this.message = `Invalid create property for service '${ serviceName }'`;
@@ -10,4 +8,4 @@ const InvalidCreatePropertyError = function (serviceName) {
 InvalidCreatePropertyError.prototype = Object.create(Error.prototype);
 InvalidCreatePropertyError.constructor = InvalidCreatePropertyError;
 
-module.exports = InvalidCreatePropertyError;
+export default InvalidCreatePropertyError;

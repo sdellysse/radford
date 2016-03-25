@@ -1,5 +1,3 @@
-"use strict";
-
 const InvalidInvocationsError = function (reason) {
     this.name = 'InvalidInvocationsError';
     this.message = `Invalid Invocation: '${ reason }'`;
@@ -10,4 +8,4 @@ const InvalidInvocationsError = function (reason) {
 InvalidInvocationsError.prototype = Object.create(Error.prototype);
 InvalidInvocationsError.constructor = InvalidInvocationsError;
 
-module.exports = InvalidInvocationsError;
+export default InvalidInvocationsError;

@@ -1,14 +1,13 @@
-global.Promise = require("bluebird");
-
-const assert = require("assert");
-const cleanInvocations = require("../src/clean-invocations");
-const Radford = require("../src/index");
+import assert from "assert";
+import cleanInvocations from "../src/clean-invocations";
+import Radford from "../src/index";
 
 describe("cleanInvocations", () => {
     it("should work on strings", () => {
         const expected = [
             {
                 name: "db",
+                _as: "db",
                 args: {},
             },
         ];
@@ -22,6 +21,7 @@ describe("cleanInvocations", () => {
         const expected = [
             {
                 name: "db",
+                _as: "db",
                 args: {
                     connString: "blah",
                 },
@@ -39,6 +39,7 @@ describe("cleanInvocations", () => {
         const expected = [
             {
                 name: "db",
+                _as: "db",
                 args: {
                     connString: "blah",
                 },
@@ -57,57 +58,53 @@ describe("cleanInvocations", () => {
 });
 
 describe("Radford", () => {
-    const log = [];
-    const radford = new Radford({
-        db: {
-            cache: true,
-            dependencies: [
-                ["logger", {
-                    name: "db",
-                }],
-            ],
-            create: (services) => {
-                return (sql) => {
-                    services.logger(sql);
-                };
+    it("should give you the correct value from an invocation", () => {
+        const radford = new Radford({
+            definitions: {
+                db: {
+                    create: ({}, { name }) => {
+                        return `db::${ name }`;
+                    },
+                },
             },
-        },
-        logger: {
-            cache: (args) => {
-                return args.name;
-            },
-            create: function (services, args) {
-                return function (message) {
-                    log.push(args.name, message);
-                };
-            },
-        },
+        });
+
+        const expected = "db::something";
+        const { db } = radford.invoke(["db", { name: "something" }]);
+
+        assert.equal(db, expected);
     });
 
-    it("should return a cached item each time", (done) => {
-        Promise.all([
-            radford.require([ "db" ]),
-            radford.require([ "db" ]),
-        ])
-        .then(results => {
-            const db1 = results[0].db;
-            const db2 = results[1].db;
+    it("should give the right deps", () => {
+        const radford = new Radford({
+            definitions: {
+                db: {
+                    dependencies: [
+                        ["logger", {
+                            name: "logger(db)",
+                        }],
+                    ],
 
-            assert.strictEqual(db1, db2);
-            done();
-        })
-        .catch(done)
-        ;
-    });
+                    create: ({ logger }, {}) => {
+                        return { logger };
+                    },
+                },
 
-    it("should have passed name to logger from db", (done) => {
-        radford.require([ "db" ])
-        .then(services => {
-            services.db("SELECT *");
-            assert.deepStrictEqual(log, ["db", "SELECT *"]);
-            done();
-        })
-        .catch(done)
-        ;
+                logger: {
+                    create: ({}, { name }) => {
+                        return { name };
+                    },
+                },
+            },
+        });
+
+        const expected = {
+            logger: {
+                name: "logger(db)",
+            },
+        };
+        const { db } = radford.invoke("db");
+
+        assert.deepStrictEqual(db, expected);
     });
 });

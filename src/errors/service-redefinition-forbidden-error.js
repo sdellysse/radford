@@ -1,5 +1,3 @@
-"use strict";
-
 const ServiceRedefinitionForbiddenError = function (definitionName) {
     this.name = 'ServiceRedefinitionForbiddenError';
     this.message = `Cannot redefine service '${ definitionName }'`;
@@ -10,4 +8,4 @@ const ServiceRedefinitionForbiddenError = function (definitionName) {
 ServiceRedefinitionForbiddenError.prototype = Object.create(Error.prototype);
 ServiceRedefinitionForbiddenError.constructor = ServiceRedefinitionForbiddenError;
 
-module.exports = ServiceRedefinitionForbiddenError;
+export default ServiceRedefinitionForbiddenError;
