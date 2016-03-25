@@ -32,7 +32,6 @@ export default function cleanInvocations (invocations) {
         } else if (typeof(invocation) === "string") {
             return {
                 name: invocation,
-                _as: invocation,
                 args: {},
             };
 
@@ -43,7 +42,6 @@ export default function cleanInvocations (invocations) {
         ) {
             return {
                 name: invocation[0],
-                _as: invocation[0],
                 args: invocation[1],
             };
 
@@ -51,10 +49,6 @@ export default function cleanInvocations (invocations) {
             && typeof(invocation.name) === "string"
             && typeof(invocation.args) === "object"
         ) {
-            if (typeof(invocation._as) === "undefined") {
-                invocation._as = invocation.name;
-            }
-
             return invocation;
 
         } else {

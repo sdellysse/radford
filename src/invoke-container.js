@@ -22,7 +22,7 @@ export default function invokeContainer (container, invocations) {
         const serviceObject = serviceDefinition.create(dependencies, invocation.args);
         serviceDefinition._resolving = false;
 
-        retval[invocation._as] = serviceObject;
+        retval[invocation.name] = serviceObject;
     }
 
     return retval;

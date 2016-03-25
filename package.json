@@ -1,6 +1,6 @@
 {
   "name": "radford",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A service container and dependency manager for your application",
   "main": "dist/index.js",
   "scripts": {

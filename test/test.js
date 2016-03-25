@@ -7,7 +7,6 @@ describe("cleanInvocations", () => {
         const expected = [
             {
                 name: "db",
-                _as: "db",
                 args: {},
             },
         ];
@@ -21,7 +20,6 @@ describe("cleanInvocations", () => {
         const expected = [
             {
                 name: "db",
-                _as: "db",
                 args: {
                     connString: "blah",
                 },
@@ -39,7 +37,6 @@ describe("cleanInvocations", () => {
         const expected = [
             {
                 name: "db",
-                _as: "db",
                 args: {
                     connString: "blah",
                 },
