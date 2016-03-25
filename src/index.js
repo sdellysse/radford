@@ -5,7 +5,7 @@ import InvalidInvocationsError from "./errors/invalid-invocations-error";
 import InvalidServiceNameError from "./errors/invalid-service-name-error";
 import invokeContainer from "./invoke-container";
 import ServiceRedefinitionForbiddenError from "./errors/service-redefinition-forbidden-error";
-import UnknownServiceError from "./errors/UnknownServiceError";
+import UnknownServiceError from "./errors/unknown-service-error";
 
 const Radford = function (options) {
     if (typeof(options) === "undefined") {
